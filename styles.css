@@ -1,0 +1,113 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 20px;
+}
+
+h1, h2 {
+  color: #333;
+}
+
+form {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  max-width: 400px; /* Đặt chiều rộng tối đa cho form */
+  margin: 20px auto; /* Căn giữa form */
+}
+
+label {
+  display: block;
+  margin: 10px 0 5px;
+}
+
+input, select {
+  padding: 10px;
+  width: calc(100% - 22px); /* Để phù hợp với padding */
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  box-sizing: border-box; /* Đảm bảo padding không làm tăng chiều rộng */
+}
+
+button {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+  display: block; /* Hiển thị dưới dạng khối để căn giữa */
+  margin: 0 auto; /* Căn giữa nút */
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.player-card {
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 300px;
+  text-align: center;
+  margin: 10px;
+  position: relative;
+  display: inline-block; /* Để các thẻ cầu thủ nằm cạnh nhau */
+}
+
+.player-card img {
+  max-width: 100%; /* Giữ kích thước ảnh phù hợp với thẻ cầu thủ */
+  border-radius: 4px;
+}
+
+.details {
+  display: none;
+  margin-top: 10px;
+}
+
+.details.visible {
+  display: block;
+}
+
+#playerList {
+  display: flex;
+  flex-wrap: wrap; /* Để các thẻ cầu thủ có thể xuống dòng */
+  justify-content: flex-start; /* Canh đều về bên trái */
+}
+
+#playerTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+#playerTable th, #playerTable td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+
+#playerTable th {
+  background-color: #007bff;
+  color: white;
+}
+
+#playerTable tr:nth-child(even) {
+  background-color: #f2f2f2; /* Tô màu hàng chẵn */
+}
+
+#playerTable tr:hover {
+  background-color: #e0e0e0; /* Tô màu khi hover */
+}
+
+#playerTable img {
+  max-width: 50px; /* Kích thước tối đa cho ảnh trong bảng */
+  border-radius: 4px; /* Bo góc cho ảnh */
+}
