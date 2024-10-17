@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
   loadPlayersFromLocalStorage();
 });
 
+// Xử lý sự kiện gửi form
 document.getElementById('playerForm').addEventListener('submit', function(event) {
   event.preventDefault(); // Ngăn form gửi theo cách truyền thống
 
@@ -36,7 +37,7 @@ document.getElementById('playerForm').addEventListener('submit', function(event)
   // Lưu cầu thủ vào localStorage
   savePlayerToLocalStorage(player);
 
-  // Thêm cầu thủ vào danh sách hiển thị
+  // Thêm cầu thủ vào danh sách hiển thị và bảng
   addPlayerToList(player);
   addPlayerToTable(player);
 
@@ -115,5 +116,11 @@ function deletePlayer(name) {
   let players = JSON.parse(localStorage.getItem('players')) || [];
   players = players.filter(player => player.name !== name);
   localStorage.setItem('players', JSON.stringify(players));
-  location.reload(); // Tải lại trang sau khi xóa
+
+  // Xóa cầu thủ khỏi danh sách hiển thị và bảng mà không cần tải lại trang
+  document.getElementById('playerList').innerHTML = ''; // Xóa danh sách hiển thị
+  document.querySelector('#playerTable tbody').innerHTML = ''; // Xóa bảng hiển thị
+
+  // Tải lại dữ liệu từ localStorage để cập nhật danh sách và bảng
+  loadPlayersFromLocalStorage();
 }
