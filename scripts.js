@@ -55,14 +55,41 @@ function savePlayerToLocalStorage(player) {
   localStorage.setItem('players', JSON.stringify(players));
 }
 
-// Hàm tải cầu thủ từ localStorage
-function loadPlayersFromLocalStorage() {
-  const players = JSON.parse(localStorage.getItem('players')) || [];
-  players.forEach(player => {
-    addPlayerToList(player);
-    addPlayerToTable(player);
-  });
+// Hàm để cập nhật danh sách cầu thủ từ Firebase
+function updatePlayerList() {
+    const playerList = document.getElementById('playerList');
+    playerList.innerHTML = ''; // Xóa danh sách hiện tại
+
+    // Lấy dữ liệu từ Firebase
+    database.ref('players').once('value').then(snapshot => {
+        snapshot.forEach(childSnapshot => {
+            const player = childSnapshot.val();
+            const li = document.createElement('li');
+            li.textContent = `${player.name} - ${player.dob} - ${player.shirtSize}`;
+            playerList.appendChild(li);
+        });
+    });
 }
+
+// Hàm để xử lý sự kiện khi gửi form
+document.getElementById('playerForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Ngăn chặn hành động gửi form mặc định
+
+    const name = document.getElementById('name').value;
+    const dob = document.getElementById('dob').value;
+    const shirtSize = document.getElementById('shirtSize').value;
+
+    // Thêm cầu thủ mới vào Firebase
+    const newPlayerRef = database.ref('players').push();
+    newPlayerRef.set({ name, dob, shirtSize }).then(() => {
+        updatePlayerList(); // Làm mới danh sách cầu thủ
+        document.getElementById('playerForm').reset(); // Đặt lại form
+    });
+});
+
+// Khởi tạo danh sách cầu thủ khi tải trang
+updatePlayerList();
+
 
 // Hàm thêm cầu thủ vào danh sách hiển thị
 function addPlayerToList(player) {
@@ -110,6 +137,20 @@ function addPlayerToTable(player) {
   `;
   document.querySelector('#playerTable tbody').appendChild(row);
 }
+// Cấu hình Firebase
+const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+    databaseURL: "https://YOUR_PROJECT_ID.firebaseio.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT_ID.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+};
+
+// Khởi tạo Firebase
+const app = firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
 
 // Hàm xóa cầu thủ
 function deletePlayer(name) {
