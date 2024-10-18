@@ -13,10 +13,18 @@ const firebaseConfig = {
 const app = firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
+// Hàm tải dữ liệu cầu thủ từ localStorage
+function loadPlayersFromLocalStorage() {
+    const players = JSON.parse(localStorage.getItem('players')) || [];
+    players.forEach(player => {
+        addPlayerToList(player);
+        addPlayerToTable(player);
+    });
+}
+
 // Tải dữ liệu từ localStorage khi trang được tải lại
 document.addEventListener('DOMContentLoaded', function() {
     loadPlayersFromLocalStorage();
-    updatePlayerList(); // Cập nhật danh sách từ Firebase
 });
 
 // Xử lý sự kiện gửi form
@@ -50,9 +58,8 @@ document.getElementById('playerForm').addEventListener('submit', function(event)
         idCardFrontURL, idCardBackURL, portraitURL
     };
 
-    // Lưu cầu thủ vào localStorage và Firebase
+    // Lưu cầu thủ vào localStorage
     savePlayerToLocalStorage(player);
-    savePlayerToFirebase(player);
 
     // Thêm cầu thủ vào danh sách hiển thị và bảng
     addPlayerToList(player);
@@ -70,36 +77,6 @@ function savePlayerToLocalStorage(player) {
     let players = JSON.parse(localStorage.getItem('players')) || [];
     players.push(player);
     localStorage.setItem('players', JSON.stringify(players));
-}
-
-// Hàm lưu cầu thủ vào Firebase
-function savePlayerToFirebase(player) {
-    const newPlayerRef = database.ref('players').push();
-    newPlayerRef.set(player);
-}
-
-// Hàm tải cầu thủ từ localStorage
-function loadPlayersFromLocalStorage() {
-    const players = JSON.parse(localStorage.getItem('players')) || [];
-    players.forEach(player => {
-        addPlayerToList(player);
-        addPlayerToTable(player);
-    });
-}
-
-// Hàm để cập nhật danh sách cầu thủ từ Firebase
-function updatePlayerList() {
-    const playerList = document.getElementById('playerList');
-    playerList.innerHTML = ''; // Xóa danh sách hiện tại
-
-    // Lấy dữ liệu từ Firebase
-    database.ref('players').once('value').then(snapshot => {
-        snapshot.forEach(childSnapshot => {
-            const player = childSnapshot.val();
-            addPlayerToList(player);
-            addPlayerToTable(player);
-        });
-    });
 }
 
 // Hàm thêm cầu thủ vào danh sách hiển thị
@@ -139,4 +116,26 @@ function addPlayerToTable(player) {
         <td><img src="${player.portraitURL}" alt="Ảnh chân dung" style="max-width: 50px;"></td>
         <td>${player.name}</td>
         <td>${player.dob}</td>
-        <td>${player
+        <td>${player.shirtSize}</td>
+        <td>${player.position}</td>
+        <td>${player.number}</td>
+        <td><img src="${player.idCardFrontURL}" alt="Ảnh căn cước (Mặt trước)" style="max-width: 50px;"></td>
+        <td><img src="${player.idCardBackURL}" alt="Ảnh căn cước (Mặt sau)" style="max-width: 50px;"></td>
+        <td><button onclick="deletePlayer('${player.name}')">Xóa</button></td>
+    `;
+    document.querySelector('#playerTable tbody').appendChild(row);
+}
+
+// Hàm xóa cầu thủ
+function deletePlayer(name) {
+    let players = JSON.parse(localStorage.getItem('players')) || [];
+    players = players.filter(player => player.name !== name);
+    localStorage.setItem('players', JSON.stringify(players));
+
+    // Xóa cầu thủ khỏi danh sách hiển thị và bảng mà không cần tải lại trang
+    document.getElementById('playerList').innerHTML = ''; // Xóa danh sách hiển thị
+    document.querySelector('#playerTable tbody').innerHTML = ''; // Xóa bảng hiển thị
+
+    // Tải lại dữ liệu từ localStorage để cập nhật danh sách và bảng
+    loadPlayersFromLocalStorage();
+}
